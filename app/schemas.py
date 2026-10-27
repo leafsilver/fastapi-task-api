@@ -7,3 +7,9 @@ class TaskCreate(BaseModel):
         max_length=100,
     )
     completed: bool = False
+
+
+class TaskResponse(BaseModel):
+    id: int
+    title: str
+    completed: bool

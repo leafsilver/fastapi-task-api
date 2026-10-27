@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app.schemas import TaskCreate
+from app.schemas import TaskCreate, TaskResponse
 
 
 router = APIRouter(
@@ -19,7 +19,7 @@ tasks = [
 next_task_id = 2
 
 
-@router.get("")
+@router.get("", response_model=list[TaskResponse])
 def list_tasks(completed: bool | None = None):
     if completed is None:
         return tasks
@@ -31,7 +31,11 @@ def list_tasks(completed: bool | None = None):
     ]
 
 
-@router.post("", status_code=201)
+@router.post(
+    "",
+    response_model=TaskResponse,
+    status_code=201,
+)
 def create_task(task_data: TaskCreate):
     global next_task_id
 
@@ -46,7 +50,7 @@ def create_task(task_data: TaskCreate):
     return task
 
 
-@router.put("/{task_id}")
+@router.put("/{task_id}", response_model=TaskResponse)
 def update_task(task_id: int, task_data: TaskCreate):
     for task in tasks:
         if task["id"] == task_id:
@@ -73,7 +77,7 @@ def delete_task(task_id: int):
     )
 
 
-@router.get("/{task_id}")
+@router.get("/{task_id}", response_model=TaskResponse)
 def get_task(task_id: int):
     for task in tasks:
         if task["id"] == task_id:
